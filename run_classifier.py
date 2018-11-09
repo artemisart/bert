@@ -820,6 +820,14 @@ def main(_):
       eval_batch_size=FLAGS.eval_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
 
+  def get_gpus():
+    from tensorflow.python.client.device_lib import list_local_devices
+    return [x.name for x in list_local_devices() if x.device_type == 'GPU']
+  if not FLAGS.use_tpu:
+    n_gpus = len(get_gpus())
+    if n_gpus > 1:
+      estimator = tf.keras.utils.multi_gpu_model(estimator, n_gpus)
+
   if FLAGS.do_train:
     train_file = os.path.join(FLAGS.output_dir, "train.tf_record")
     file_based_convert_examples_to_features(
