@@ -31,6 +31,7 @@ def main(source, target):
     test = get_texts(source / "test")
 
     dev, test = train_test_split(test, test_size=.5, random_state=42)
+    train = train.sample(frac=1, random_state=42)
 
     train.to_csv(target / "train.tsv", "\t", index=False)
     dev.to_csv(target / "dev.tsv", "\t", index=False)
